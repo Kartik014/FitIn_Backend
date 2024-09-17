@@ -1,4 +1,5 @@
 import app from "./app.js";
+import pool from "./database/db.js";
 
 const port = 3000;
 
