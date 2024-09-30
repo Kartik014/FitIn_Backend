@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import xssClean from "xss-clean";
+import apiRouter from "./routers/user.js";
 
 const app = express();
 
@@ -55,6 +56,8 @@ app.use(
         noSniff: true,
         xssFilter: true,
     })
-  )  
+  )
+
+  app.use('/api', apiRouter);
 
 export default app;

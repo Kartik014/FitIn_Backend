@@ -1,13 +1,15 @@
 import pkg from "pg";
+import dotenv from "dotenv";
 
+dotenv.config();
 const { Pool } = pkg;
 
 const pool = new Pool({
-    user: 'postgres',
-    host: 'fitin-database.ct6a4uiaw2sr.us-east-1.rds.amazonaws.com',
-    database: 'FitIn_Database',
-    password: 'PUFAVRHTFP',
-    port: 5432,
+    user: process.env.DATABASE_USER,
+    host: process.env.DATABASE_HOST,
+    database: process.env.DATABASE_NAME,
+    password: process.env.DATABASE_PASSWORD,
+    port: process.env.DATABASE_PORT,
     ssl: {
         rejectUnauthorized: false
     }
