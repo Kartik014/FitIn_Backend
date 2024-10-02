@@ -55,6 +55,99 @@ const user = {
             console.error('Error inserting user:', err);
             throw err;
         }
+    },
+
+    getUserbyEmailOrUsername: async (userDTO) => {
+        const queryText = `
+        SELECT * FROM users WHERE email = $1 OR username = $2;
+        `;
+
+        const values = [userDTO.email, userDTO.username];
+
+        try {
+            const client = await pool.connect();
+            const result = await client.query(queryText, values);
+            client.release();
+            return result.rows[0];
+        } catch (err) {
+            console.error('Error getting user:', err);
+            throw err;
+        }
+    },
+
+    updateUserLogIn: async (userDTO) => {
+        const queryText = `
+            UPDATE users
+            SET session = $1
+            WHERE id = $2
+            RETURNING *;
+        `;
+
+        const values = [userDTO.session, userDTO.id];
+
+        try {
+            const client = await pool.connect();
+            const result = await client.query(queryText, values);
+            client.release();
+            return result.rows[0];
+        } catch (err) {
+            console.error('Error updating user session:', err);
+            throw err;
+        }
+    },
+
+    updateUserProfile: async (userDTO) => {
+        const updates = [];
+        const values = [];
+        let index = 1;
+
+        if (userDTO.username) {
+            updates.push(`username = $${index++}`);
+            values.push(userDTO.username);
+        }
+        if (userDTO.password) {
+            updates.push(`password = $${index++}`);
+            values.push(userDTO.password);
+        }
+        if (userDTO.mobileNumber) {
+            updates.push(`mobile_number = $${index++}`);
+            values.push(userDTO.mobileNumber);
+        }
+        if (userDTO.gender) {
+            updates.push(`gender = $${index++}`);
+            values.push(userDTO.gender);
+        }
+        if (userDTO.dob) {
+            updates.push(`dob = $${index++}`);
+            values.push(userDTO.dob);
+        }
+        if (userDTO.session) {
+            updates.push(`session = $${index++}`);
+            values.push(userDTO.session);
+        }
+
+        if (updates.length === 0) {
+            throw new Error('No fields to update');
+        }
+
+        values.push(userDTO.id);
+
+        const queryText = `
+            UPDATE users
+            SET ${updates.join(', ')}
+            WHERE id = $${index}
+            RETURNING *;
+        `;
+
+        try {
+            const client = await pool.connect();
+            const result = await client.query(queryText, values);
+            client.release();
+            return result.rows[0];
+        } catch (err) {
+            console.error('Error updating user profile:', err);
+            throw err;
+        }
     }
 }
 

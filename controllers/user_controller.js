@@ -1,31 +1,100 @@
+import { nanoid } from "nanoid";
 import UserDTO from "../DTO/userDTO.js";
 import userService from "../service/user_service.js";
 
 const createUser = async (req, res) => {
     try {
+
+        const userID = nanoid(8);
         
         const userDTO = new UserDTO(
-            req.body.id,
+            userID,
             req.body.username,
-            req.body.email,
             req.body.password,
             req.body.role,
             req.body.mobileNumber,
             req.body.gender,
-            req.body.dob
+            req.body.dob,
+            req.body.email,
         )
+
         const newUser = await userService.addUser(userDTO);
+
         res.status(200).json({
             message: 'User created successfully',
             user: newUser
         });
+
     } catch (error) {
+
         console.error('Error in getUserById controller:', error);
         res.status(404).json({
             message: 'User not found',
             error: error.message
         });
+
     }
 }
 
-export default createUser;
+const getUser = async (req, res) => {
+    try {
+
+        const userDTO = new UserDTO(
+            null,
+            req.body.username || null,
+            req.body.password,
+            req.body.role,
+            null,
+            null,
+            req.body.email || null,
+            null
+        )
+
+        const existingUser = await userService.getUser(userDTO);
+
+        res.status(200).json({
+            message: 'LogIn successful',
+            user: existingUser
+        });
+
+    } catch (err) {
+
+        console.error('Error in getUser controller:', err);
+        res.status(404).json({
+            message: 'User not found',
+            error: err.message
+        });
+
+    }
+}
+
+const updateUser = async (req, res) => {
+    try {
+        
+        const {id, email, role} = req.user;
+
+        const updateUser = new UserDTO(
+            id,
+            req.username || null,
+            email,
+            req.password || null,
+            role,
+            req.mobileNumber || null,
+            req.gender || null,
+            req.dob || null,
+            req.headers.authorization?.split(' ')[1]
+        )
+
+        const updateProfile = await userService.updateUser(updateUser);
+    } catch (err) {
+
+        console.error('Error in updateUser controller:', err);
+        res.status(404).json({
+            message: 'User not found',
+            error: err.message
+        });
+
+    }
+}
+
+export {createUser, getUser, updateUser};
