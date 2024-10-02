@@ -19,7 +19,7 @@ class UserDTO {
         }
         return email;
     }
-    
+
     validatePassword(password) {
         const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
         if (!passwordRegex.test(password)) {
@@ -27,7 +27,7 @@ class UserDTO {
         }
         return password;
     }
-    
+
     validateMobileNumber(mobileNumber) {
         if (mobileNumber === null) return null;
         const mobileRegex = /^\+?[0-9]{10,15}$/;
@@ -44,7 +44,7 @@ class UserDTO {
         }
         return role.toLowerCase();
     }
-    
+
 }
 
 export default UserDTO;

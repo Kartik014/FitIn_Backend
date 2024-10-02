@@ -6,7 +6,7 @@ const createUser = async (req, res) => {
     try {
 
         const userID = nanoid(8);
-        
+
         const userDTO = new UserDTO(
             userID,
             req.body.username,
@@ -70,22 +70,28 @@ const getUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-        
-        const {id, email, role} = req.user;
+
+        const { id, email, role } = req.user;
 
         const updateUser = new UserDTO(
             id,
             req.username || null,
-            email,
             req.password || null,
             role,
             req.mobileNumber || null,
             req.gender || null,
             req.dob || null,
+            email,
             req.headers.authorization?.split(' ')[1]
         )
 
         const updateProfile = await userService.updateUser(updateUser);
+
+        res.status(200).json({
+            message: 'Profile updated',
+            user: updateProfile
+        });
+
     } catch (err) {
 
         console.error('Error in updateUser controller:', err);
@@ -97,4 +103,38 @@ const updateUser = async (req, res) => {
     }
 }
 
-export {createUser, getUser, updateUser};
+const logoutUser = async (req, res) => {
+    try {
+
+        const { id, email, role } = req.user;
+
+        const existingUser = new UserDTO(
+            id,
+            null,
+            null,
+            role,
+            null,
+            null,
+            null,
+            email,
+            req.headers.authorization?.split(' ')[1]
+        )
+
+        const logout = await userService.logoutUser(existingUser);
+
+        res.status(200).json({
+            message: "Logout Successful",
+            user: logout
+        });
+
+    } catch (err) {
+
+        res.status(404).json({
+            message: "User not found",
+            error: err.message
+        });
+
+    }
+}
+
+export { createUser, getUser, updateUser, logoutUser };

@@ -65,11 +65,27 @@ const userService = {
 
     updateUser: async (userDTO) => {
         try {
+
             const updatedProfile = await user.updateUserProfile(userDTO);
             return updatedProfile;
+
         } catch (err) {
 
             console.error('Error in updateUser service: ', err);
+            throw err;
+
+        }
+    },
+
+    logoutUser: async (userDTO) => {
+        try {
+
+            const logout = await user.logoutUser(userDTO);
+            return logout;
+            
+        } catch (err) {
+
+            console.error('Error in logoutUser service: ', err);
             throw err;
 
         }

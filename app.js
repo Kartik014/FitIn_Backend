@@ -13,51 +13,51 @@ app.use(cors())
 app.use(helmet())
 
 const limiter = rateLimit({
-    windowMs : 15*60*1000,
-    max : 100,
-    message : "Too many request, Please try again later"
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: "Too many request, Please try again later"
 })
 
 app.use(limiter)
 app.use(xssClean())
 app.use(
-    helmet.contentSecurityPolicy({
-        directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: [
-              "'self'",
-              "'strict-dynamic'",
-            ],
-            styleSrc: [
-              "'self'",
-              "trusted-styles.com",
-              "'sha256-<your-hash>'",
-            ],
-            objectSrc: ["'none'"],
-            frameSrc: ["'none'"],
-            frameAncestors: ["'none'"],
-            baseUri: ["'self'"],
-            formAction: ["'self'"],
-            upgradeInsecureRequests: [],
-            blockAllMixedContent: []
-        },
-        crossOriginEmbedderPolicy: false,
-        crossOriginOpenerPolicy: "same-origin",
-        referrerPolicy: { policy: "no-referrer" },
-        dnsPrefetchControl: { allow: false },
-        frameguard: { action: 'deny' },
-        hidePoweredBy: true,
-        hsts: {
-            maxAge: 31536000,
-            includeSubDomains: true,
-            preload: true,
-        },
-        ieNoOpen: true,
-        noSniff: true,
-        xssFilter: true,
-    })
-  )
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        "'strict-dynamic'",
+      ],
+      styleSrc: [
+        "'self'",
+        "trusted-styles.com",
+        "'sha256-<your-hash>'",
+      ],
+      objectSrc: ["'none'"],
+      frameSrc: ["'none'"],
+      frameAncestors: ["'none'"],
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      upgradeInsecureRequests: [],
+      blockAllMixedContent: []
+    },
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: "same-origin",
+    referrerPolicy: { policy: "no-referrer" },
+    dnsPrefetchControl: { allow: false },
+    frameguard: { action: 'deny' },
+    hidePoweredBy: true,
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+    ieNoOpen: true,
+    noSniff: true,
+    xssFilter: true,
+  })
+)
 
-  app.use('/api', userRouter);
+app.use('/api', userRouter);
 
 export default app;

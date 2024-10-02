@@ -26,7 +26,7 @@ const user = {
             throw err;
         }
     },
-    
+
     addUser: async (userDTO) => {
         const queryText = `
             INSERT INTO users (id, username, email, password, session, role, mobile_number, gender, dob)
@@ -146,6 +146,30 @@ const user = {
             return result.rows[0];
         } catch (err) {
             console.error('Error updating user profile:', err);
+            throw err;
+        }
+    },
+
+    logoutUser: async (userDTO) => {
+        try {
+            const queryText = `
+            UPDATE users
+            SET session = NULL
+            WHERE id = $1 AND session = $2
+            RETURNING *;
+        `;
+
+            const values = [userDTO.id, userDTO.session];
+
+            const result = await db.query(queryText, values);
+
+            if (result.rowCount === 0) {
+                throw new Error('Session not found or already logged out');
+            }
+
+            return result.rows[0];
+        } catch (err) {
+            console.error('Error in log out: ', err);
             throw err;
         }
     }
