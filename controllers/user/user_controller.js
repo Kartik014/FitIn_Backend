@@ -26,6 +26,8 @@ const createUser = async (req, res) => {
             null,
             null,
             newUser.id,
+            newUser.email,
+            newUser.username,
             "new_account",
             false
         )
@@ -53,7 +55,7 @@ const getUser = async (req, res) => {
     try {
 
         const userDTO = new UserDTO(
-            null,
+            req.body.id,
             req.body.username || null,
             req.body.password,
             req.body.role,
@@ -63,12 +65,26 @@ const getUser = async (req, res) => {
             null
         )
 
-        const existingUser = await userService.getUser(userDTO);
+        const otpDTO = new OtpDTO(
+            null,
+            null,
+            req.body.id,
+            "new_account",
+            false
+        )
+        
+        const isOtpVerified = await otpService.isOtpVerified(otpDTO);
 
-        res.status(200).json({
-            message: 'LogIn successful',
-            user: existingUser
-        });
+        if (isOtpVerified) {
+            const existingUser = await userService.getUser(userDTO);
+
+            res.status(200).json({
+                message: 'LogIn successful',
+                user: existingUser
+            });
+        } else {
+            throw new Error('OTP not verified.');
+        }
 
     } catch (err) {
 

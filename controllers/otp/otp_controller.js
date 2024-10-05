@@ -4,7 +4,7 @@ import otpService from "../../service/otp/otp_service.js";
 const createOtp = async (req, res) => {
     try {
 
-        const { id, eamil, role } = req.user;
+        const { id, email, role } = req.user;
 
         const otpDTO = new OtpDTO(
             null,

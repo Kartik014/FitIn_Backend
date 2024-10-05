@@ -29,11 +29,29 @@ const otpService = {
 
     verifyOtp: async (otpDTO) => {
         try {
+
             const verifiedOtp = await otp.verifyOtp(otpDTO);
             return verifiedOtp;
+
         } catch (err) {
+
             console.error('Error in verifyOtp service: ', err);
             throw err;
+
+        }
+    },
+
+    isOtpVerified: async (otpDTO) => {
+        try {
+
+            const isVerified = await otp.isOtpVerified(otpDTO);
+            return isVerified;
+
+        } catch (err) {
+
+            console.error('Error in isOtpVerified: ', err);
+            throw err;
+
         }
     }
 }

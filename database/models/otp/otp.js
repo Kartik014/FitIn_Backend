@@ -67,6 +67,30 @@ const otp = {
             console.error('Error verifying OTP: ', err);
             throw err;
         }
+    },
+
+    isOtpVerified: async (otpDTO) => {
+        const queryText = `
+            SELECT * FROM otp
+            WHERE user_id = $1 AND type = $2;
+        `;
+
+        const values = [otpDTO.userId, otpDTO.type];
+
+        try {
+            const client = await pool.connect();
+            const res = await client.query(queryText, values);
+            client.release();
+
+            if (res.rows.length === 0) {
+                throw new Error('OTP not found');
+            }
+
+            return res.rows[0].is_verified;
+        } catch (err) {
+            console.error('Error checking OTP verification status: ', err);
+            throw err;
+        }
     }
 }
 
