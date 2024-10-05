@@ -4,6 +4,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import xssClean from "xss-clean";
 import userRouter from "./routers/user.js";
+import otpRouter from "./routers/otp.js";
 
 const app = express();
 
@@ -58,6 +59,6 @@ app.use(
   })
 )
 
-app.use('/api', userRouter);
+app.use('/api', userRouter, otpRouter);
 
 export default app;

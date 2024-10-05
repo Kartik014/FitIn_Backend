@@ -1,4 +1,5 @@
-import pool from "../db.js";
+import pool from "../../db.js";
+import bcrypt from "bcrypt";
 
 const user = {
     createUserTable: async () => {
@@ -106,8 +107,9 @@ const user = {
             values.push(userDTO.username);
         }
         if (userDTO.password) {
+            const hashedPassword = await bcrypt.hash(userDTO.password, 10);
             updates.push(`password = $${index++}`);
-            values.push(userDTO.password);
+            values.push(hashedPassword);
         }
         if (userDTO.mobileNumber) {
             updates.push(`mobile_number = $${index++}`);
@@ -170,6 +172,36 @@ const user = {
             return result.rows[0];
         } catch (err) {
             console.error('Error in log out: ', err);
+            throw err;
+        }
+    },
+
+    deleteUser: async (userDTO) => {
+        try {
+            const queryText = `
+            DELETE FROM users 
+            WHERE id = $1 
+            RETURNING *;
+        `;
+
+            const values = [userDTO.id];
+
+            try {
+                const client = await pool.connect();
+                const result = await client.query(queryText, values);
+                client.release();
+
+                if (result.rowCount === 0) {
+                    throw new Error('User not found');
+                }
+
+                return result.rows[0];
+            } catch (err) {
+                console.error('Error deleting user:', err);
+                throw err;
+            }
+        } catch (err) {
+            console.error('Error in delete user: ', err);
             throw err;
         }
     }

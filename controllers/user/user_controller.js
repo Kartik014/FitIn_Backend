@@ -1,6 +1,8 @@
 import { nanoid } from "nanoid";
-import UserDTO from "../DTO/userDTO.js";
-import userService from "../service/user_service.js";
+import UserDTO from "../../DTO/userDTO.js";
+import userService from "../../service/user/user_service.js";
+import otpService from "../../service/otp/otp_service.js";
+import OtpDTO from "../../DTO/otpDTO.js";
 
 const createUser = async (req, res) => {
     try {
@@ -20,9 +22,20 @@ const createUser = async (req, res) => {
 
         const newUser = await userService.addUser(userDTO);
 
+        const otpDTO = new OtpDTO(
+            null,
+            null,
+            newUser.id,
+            "new_account",
+            false
+        )
+
+        const otp = await otpService.addOtp(otpDTO);
+
         res.status(200).json({
             message: 'User created successfully',
-            user: newUser
+            user: newUser,
+            otp: otp
         });
 
     } catch (error) {
@@ -137,4 +150,37 @@ const logoutUser = async (req, res) => {
     }
 }
 
-export { createUser, getUser, updateUser, logoutUser };
+const deleteUser = async (req, res) => {
+    try {
+        const { id, email, role } = req.user;
+
+        const existingUser = new UserDTO(
+            id,
+            null,
+            null,
+            role,
+            null,
+            null,
+            null,
+            email,
+            req.headers.authorization?.split(' ')[1]
+        )
+
+        const deleteUser = await userService.deleteUser(existingUser);
+
+        res.status(200).json({
+            message: "Account deleted successfully",
+            user: deleteUser
+        });
+
+    } catch (err) {
+
+        res.status(404).json({
+            message: "User not found",
+            error: err.message
+        });
+
+    }
+}
+
+export { createUser, getUser, updateUser, logoutUser, deleteUser };

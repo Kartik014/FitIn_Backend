@@ -1,7 +1,7 @@
-import user from "../database/models/user.js";
-import UserDTO from "../DTO/userDTO.js";
+import user from "../../database/models/user/user.js";
+import UserDTO from "../../DTO/userDTO.js";
 import * as bcrypt from "bcrypt";
-import jwtService from "../jwtservice/jwt.js";
+import jwtService from "../../jwtservice/jwt.js";
 
 const userService = {
     addUser: async (userDTO) => {
@@ -16,12 +16,12 @@ const userService = {
             const newUser = new UserDTO(
                 userDTO.id,
                 userDTO.username,
-                userDTO.email,
                 hashedPassword,
                 userDTO.role,
                 userDTO.mobileNumber,
                 userDTO.gender,
-                userDTO.dob
+                userDTO.dob,
+                userDTO.email
             )
 
             const createUser = await user.addUser(newUser);
@@ -86,6 +86,20 @@ const userService = {
         } catch (err) {
 
             console.error('Error in logoutUser service: ', err);
+            throw err;
+
+        }
+    },
+
+    deleteUser: async (userDTO) => {
+        try {
+
+            const deleteUser = await user.deleteUser(userDTO);
+            return deleteUser;
+            
+        } catch (err) {
+
+            console.error('Error in deleteUser service: ', err);
             throw err;
 
         }

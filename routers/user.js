@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, getUser, logoutUser, updateUser } from "../controllers/user_controller.js";
+import { createUser, deleteUser, getUser, logoutUser, updateUser } from "../controllers/user/user_controller.js";
 import authenticateToken from "../middlewares/authenticateToken.js";
 import xssClean from "xss-clean";
 
@@ -20,5 +20,9 @@ apiRouter
 apiRouter
     .route('/logout')
     .post(authenticateToken, xssClean(), logoutUser)
+
+apiRouter
+    .route('/signOut')
+    .post(authenticateToken, xssClean(), deleteUser)
 
 export default apiRouter;
