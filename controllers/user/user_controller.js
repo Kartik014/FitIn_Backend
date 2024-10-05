@@ -26,8 +26,6 @@ const createUser = async (req, res) => {
             null,
             null,
             newUser.id,
-            newUser.email,
-            newUser.username,
             "new_account",
             false
         )
@@ -72,7 +70,7 @@ const getUser = async (req, res) => {
             "new_account",
             false
         )
-        
+
         const isOtpVerified = await otpService.isOtpVerified(otpDTO);
 
         if (isOtpVerified) {
