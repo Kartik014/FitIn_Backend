@@ -1,10 +1,10 @@
 class UserDTO {
-    constructor(id, username, password, role, mobileNumber = null, gender = null, dob = null, email = null, session = null) {
+    constructor(id, username, password, role, mobilenumber = null, gender = null, dob = null, email = null, session = null) {
         this.id = id;
         this.username = username;
         this.password = this.validatePassword(password);
         this.role = this.validateRole(role);
-        this.mobileNumber = this.validateMobileNumber(mobileNumber);
+        this.mobilenumber = this.validatemobilenumber(mobilenumber);
         this.gender = gender;
         this.dob = dob;
         this.email = this.validateEmail(email);
@@ -28,13 +28,13 @@ class UserDTO {
         return password;
     }
 
-    validateMobileNumber(mobileNumber) {
-        if (mobileNumber === null) return null;
+    validatemobilenumber(mobilenumber) {
+        if (mobilenumber === null) return null;
         const mobileRegex = /^\+?[0-9]{10,15}$/;
-        if (!mobileRegex.test(mobileNumber)) {
+        if (!mobileRegex.test(mobilenumber)) {
             throw new Error('Invalid mobile number format');
         }
-        return mobileNumber;
+        return mobilenumber;
     }
 
     validateRole(role) {

@@ -18,7 +18,7 @@ const userService = {
                 userDTO.username,
                 hashedPassword,
                 userDTO.role,
-                userDTO.mobileNumber,
+                userDTO.mobilenumber,
                 userDTO.gender,
                 userDTO.dob,
                 userDTO.email
@@ -102,6 +102,16 @@ const userService = {
             console.error('Error in deleteUser service: ', err);
             throw err;
 
+        }
+    },
+
+    getAllUserEmailsAndUsernames: async () => {
+        try {
+            const userEmailsAndUsernames = await user.getAllUserEmailsAndUsernames();
+            return userEmailsAndUsernames;
+        } catch (err) {
+            console.error('Error in getAllUserEmailsAndUsernames service: ', err);
+            throw err;
         }
     }
 }

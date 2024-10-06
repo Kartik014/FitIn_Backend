@@ -14,7 +14,7 @@ const createUser = async (req, res) => {
             req.body.username,
             req.body.password,
             req.body.role,
-            req.body.mobileNumber,
+            req.body.mobilenumber,
             req.body.gender,
             req.body.dob,
             req.body.email,
@@ -67,8 +67,7 @@ const getUser = async (req, res) => {
             null,
             null,
             req.body.id,
-            "new_account",
-            false
+            "new_account"
         )
 
         const isOtpVerified = await otpService.isOtpVerified(otpDTO);
@@ -105,7 +104,7 @@ const updateUser = async (req, res) => {
             req.username || null,
             req.password || null,
             role,
-            req.mobileNumber || null,
+            req.mobilenumber || null,
             req.gender || null,
             req.dob || null,
             email,
@@ -197,4 +196,24 @@ const deleteUser = async (req, res) => {
     }
 }
 
-export { createUser, getUser, updateUser, logoutUser, deleteUser };
+const getUserNamesAndEmails = async (req, res) => {
+    try {
+
+        const userEmailsAndUsernames = await userService.getAllUserEmailsAndUsernames();
+
+        res.status(200).json({
+            message: 'Fetched all emails and usernames successfully',
+            data: userEmailsAndUsernames
+        });
+
+    } catch (err) {
+
+        res.status(404).json({
+            message: "User not found",
+            error: err.message
+        });
+
+    }
+}
+
+export { createUser, getUser, updateUser, logoutUser, deleteUser, getUserNamesAndEmails };

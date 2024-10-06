@@ -35,12 +35,10 @@ const createOtp = async (req, res) => {
 const verifyOtp = async (req, res) => {
     try {
 
-        const { id, email, role } = req.user;
-
         const otpDTO = new OtpDTO(
             req.body.otp,
-            req.body.expirationTime,
-            id,
+            null,
+            req.body.id,
             req.body.type,
             false
         )

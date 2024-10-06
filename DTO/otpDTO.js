@@ -3,8 +3,17 @@ class OtpDTO {
         this.otp = otp;
         this.expirationTime = expirationTime;
         this.userId = userId;
-        this.type = type;
+        this.type = this.validateType(type);
         this.isVerified = isVerified;
+    }
+
+    validateType(type) {
+        const allowedTypes = ['new_account', 'forgot_password', 'change_password'];
+        if (!allowedTypes.includes(type.toLowerCase())) {
+            throw new Error(`Invalid type. Allowed types are: ${allowedTypes.join(', ')}`);
+        }
+
+        return type.toLowerCase();
     }
 }
 

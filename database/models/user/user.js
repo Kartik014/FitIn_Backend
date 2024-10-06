@@ -11,7 +11,7 @@ const user = {
                 password VARCHAR(255) NOT NULL,
                 session VARCHAR(255),
                 role VARCHAR(50),
-                mobile_number VARCHAR(15),
+                mobilenumber VARCHAR(15),
                 gender VARCHAR(10),
                 dob DATE
             );
@@ -30,7 +30,7 @@ const user = {
 
     addUser: async (userDTO) => {
         const queryText = `
-            INSERT INTO users (id, username, email, password, session, role, mobile_number, gender, dob)
+            INSERT INTO users (id, username, email, password, session, role, mobilenumber, gender, dob)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING *;
         `;
@@ -42,7 +42,7 @@ const user = {
             userDTO.password,
             userDTO.session,
             userDTO.role,
-            userDTO.mobileNumber,
+            userDTO.mobilenumber,
             userDTO.gender,
             userDTO.dob
         ];
@@ -111,9 +111,9 @@ const user = {
             updates.push(`password = $${index++}`);
             values.push(hashedPassword);
         }
-        if (userDTO.mobileNumber) {
-            updates.push(`mobile_number = $${index++}`);
-            values.push(userDTO.mobileNumber);
+        if (userDTO.mobilenumber) {
+            updates.push(`mobilenumber = $${index++}`);
+            values.push(userDTO.mobilenumber);
         }
         if (userDTO.gender) {
             updates.push(`gender = $${index++}`);
@@ -202,6 +202,22 @@ const user = {
             }
         } catch (err) {
             console.error('Error in delete user: ', err);
+            throw err;
+        }
+    },
+
+    getAllUserEmailsAndUsernames: async () => {
+        const queryText = `
+            SELECT email, username FROM users;
+        `;
+
+        try {
+            const client = await pool.connect();
+            const result = await client.query(queryText);
+            client.release();
+            return result.rows;
+        } catch (err) {
+            console.error('Error fetching emails and usernames:', err);
             throw err;
         }
     }
