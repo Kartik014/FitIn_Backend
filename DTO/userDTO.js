@@ -1,5 +1,5 @@
 class UserDTO {
-    constructor(id, username, password, role, mobilenumber = null, gender = null, dob = null, email = null, session = null) {
+    constructor(id = null, username, password, role, mobilenumber = null, gender = null, dob = null, email = null, session = null) {
         this.id = id;
         this.username = username;
         this.password = this.validatePassword(password);

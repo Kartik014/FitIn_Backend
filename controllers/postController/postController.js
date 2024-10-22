@@ -18,6 +18,9 @@ export const createPostHandler = async (req, res) => {
       .json({ postId: post.postId, message: "Post created successfully!" });
   } catch (error) {
     console.error("Error creating post:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      message: 'Internal Server Error',
+      error: err.message
+    });
   }
 };

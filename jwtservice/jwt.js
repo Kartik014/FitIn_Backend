@@ -17,10 +17,10 @@ const jwtService = {
 
     validateJwt: (session) => {
         try {
-            const decodeToken = jwt.verify(session, JSON_TOKEN_SECRET);
+            const decodedToken = jwt.verify(session, JSON_TOKEN_SECRET);
             return {
                 valid: true,
-                decodeToken
+                decodedToken
             };
         } catch (err) {
             return {

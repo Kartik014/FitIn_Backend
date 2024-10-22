@@ -41,9 +41,9 @@ const createUser = async (req, res) => {
     } catch (error) {
 
         console.error('Error in getUserById controller:', error);
-        res.status(404).json({
-            message: 'User not found',
-            error: error.message
+        res.status(500).json({
+            message: 'Internal Server Error',
+            error: err.message
         });
 
     }
@@ -53,7 +53,7 @@ const getUser = async (req, res) => {
     try {
 
         const userDTO = new UserDTO(
-            req.body.id,
+            null,
             req.body.username || null,
             req.body.password,
             req.body.role,
@@ -63,31 +63,38 @@ const getUser = async (req, res) => {
             null
         )
 
+        const existingUser = await userService.getUser(userDTO);
+
         const otpDTO = new OtpDTO(
             null,
             null,
-            req.body.id,
+            existingUser.id,
             "new_account"
         )
 
         const isOtpVerified = await otpService.isOtpVerified(otpDTO);
 
         if (isOtpVerified) {
-            const existingUser = await userService.getUser(userDTO);
 
             res.status(200).json({
-                message: 'LogIn successful',
+                message: 'LogIn successfull',
                 user: existingUser
             });
+            
         } else {
-            throw new Error('OTP not verified.');
+
+            res.status(200).json({
+                message: 'OTP not verified',
+                user: existingUser
+            });
+
         }
 
     } catch (err) {
 
         console.error('Error in getUser controller:', err);
-        res.status(404).json({
-            message: 'User not found',
+        res.status(500).json({
+            message: 'Internal Server Error',
             error: err.message
         });
 
@@ -121,8 +128,8 @@ const updateUser = async (req, res) => {
     } catch (err) {
 
         console.error('Error in updateUser controller:', err);
-        res.status(404).json({
-            message: 'User not found',
+        res.status(500).json({
+            message: 'Internal Server Error',
             error: err.message
         });
 
@@ -155,8 +162,8 @@ const logoutUser = async (req, res) => {
 
     } catch (err) {
 
-        res.status(404).json({
-            message: "User not found",
+        res.status(500).json({
+            message: 'Internal Server Error',
             error: err.message
         });
 
@@ -188,8 +195,8 @@ const deleteUser = async (req, res) => {
 
     } catch (err) {
 
-        res.status(404).json({
-            message: "User not found",
+        res.status(500).json({
+            message: 'Internal Server Error',
             error: err.message
         });
 
@@ -208,8 +215,8 @@ const getUserNamesAndEmails = async (req, res) => {
 
     } catch (err) {
 
-        res.status(404).json({
-            message: "User not found",
+        res.status(500).json({
+            message: 'Internal Server Error',
             error: err.message
         });
 

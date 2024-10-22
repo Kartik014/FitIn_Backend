@@ -24,8 +24,8 @@ const createOtp = async (req, res) => {
     } catch (err) {
 
         console.error('Error in createOto controller:', err);
-        res.status(404).json({
-            message: 'Error generating otp',
+        res.status(500).json({
+            message: 'Internal Server Error',
             error: err.message
         });
 
@@ -53,8 +53,8 @@ const verifyOtp = async (req, res) => {
     } catch (err) {
 
         console.error('Error in verifyOtp controller:', err);
-        res.status(400).json({
-            message: 'Error verifying OTP',
+        res.status(500).json({
+            message: 'Internal Server Error',
             error: err.message
         });
 

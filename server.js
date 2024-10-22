@@ -1,5 +1,6 @@
 import app from "./app.js";
 import pool from "./database/db.js";
+import followers from "./database/models/followers/followers.js";
 import otp from "./database/models/otp/otp.js";
 import user from "./database/models/user/user.js";
 import dotenv from "dotenv";
@@ -12,6 +13,7 @@ const initializeDatabase = async () => {
     try {
         await user.createUserTable();
         await otp.createOtpTable();
+        await followers.createFollowersTable();
         console.log('Database initialized');
     } catch (error) {
         console.error('Database initialization failed:', error);
