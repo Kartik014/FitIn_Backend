@@ -1,6 +1,6 @@
 import bucket from "../../firebase.js"; // Firebase configuration
 import path from "path";
-import pool from "../../database/db.js";
+import { pool } from "../../database/db.js";
 
 // Function to create a post
 const createPost = async ({
