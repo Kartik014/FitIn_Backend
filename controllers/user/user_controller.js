@@ -3,6 +3,8 @@ import UserDTO from "../../DTO/userDTO.js";
 import userService from "../../service/user/user_service.js";
 import otpService from "../../service/otp/otp_service.js";
 import OtpDTO from "../../DTO/otpDTO.js";
+import producer from "../../kafka/kafkaProducer.js";
+import createTopic from "../../kafka/kafkaAdmin.js";
 
 const createUser = async (req, res) => {
     try {
@@ -31,6 +33,9 @@ const createUser = async (req, res) => {
         )
 
         const otp = await otpService.addOtp(otpDTO);
+
+        await createTopic("new-user", 1);
+        producer.newUserProducer(newUser, otp);
 
         res.status(200).json({
             message: 'User created successfully',
@@ -80,7 +85,7 @@ const getUser = async (req, res) => {
                 message: 'LogIn successfull',
                 user: existingUser
             });
-            
+
         } else {
 
             res.status(200).json({

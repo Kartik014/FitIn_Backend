@@ -4,6 +4,10 @@ import followers from "./database/models/followers/followers.js";
 import otp from "./database/models/otp/otp.js";
 import user from "./database/models/user/user.js";
 import dotenv from "dotenv";
+import consumer from "./kafka/kafkaConsumer.js";
+import { Server } from "socket.io";
+import socketRoute from "./routers/sockets.js";
+import startBulkSaveCron from "./utils/bulkSaveMessage.js";
 
 dotenv.config();
 
@@ -14,18 +18,30 @@ const initializeDatabase = async () => {
     await user.createUserTable();
     await otp.createOtpTable();
     await followers.createFollowersTable();
-    console.log("Database initialized");
+    console.log('Database initialized');
+    await consumer.newUserConsumer();
   } catch (error) {
-    console.error("Database initialization failed:", error);
+    console.error('Database initialization failed:', error);
     process.exit(1);
   }
 };
 
 const startServer = async () => {
   await initializeDatabase();
-  app.listen(port, () => {
+  startBulkSaveCron();
+
+  const server = app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
+
+  const io = new Server(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
+  
+  socketRoute(io);
 };
 
 startServer();
