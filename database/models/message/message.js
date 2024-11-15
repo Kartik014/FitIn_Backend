@@ -119,6 +119,17 @@ const chat = {
             .limit(limit)
             .exec();
         return messages.reverse();
+    },
+
+    deleteMessage: async (messageID) => {
+        const result = await Conversation.findByIdAndUpdate(
+            { mid: messageID },
+            { body: "This message was deleted" },
+            { isDeleted: "1" },
+            { new: true }
+        );
+
+        return result;
     }
 }
 

@@ -24,6 +24,7 @@ const chatService = {
             await redisClient.rpush(`chat:${roomID}`, JSON.stringify(message));
         } catch (error) {
             console.error('Error pushing message to Redis:', error);
+            throw error;
         }
 
         return message;
@@ -41,6 +42,41 @@ const chatService = {
         const roomIDS = await chat.getConversationIDS(userID);
 
         return roomIDS;
+    },
+
+    deleteMessage: async (roomID, messageID) => {
+
+        try {
+
+            const messages = await redisClient.lrange(`chat:${roomID}`, 0, -1);
+
+            for (let i = 0; i < messages.length; i++) {
+                const message = JSON.parse(messages[i]);
+
+                if (message.mid === mid) {
+
+                    message.body = "This message was deleted";
+                    message.isDeleted = "1";
+                    await redisClient.lset(`chat:${roomID}`, i, JSON.stringify(message));
+
+                    return message;
+                }
+
+            }
+
+            const updatedMessage = await chat.deleteMessage(messageID);
+
+            if (updatedMessage) {
+                return updatedMessage;
+            }
+
+        } catch (err) {
+
+            console.error('Error deleting message:', err);
+            throw err;
+
+        }
+
     }
 }
 
