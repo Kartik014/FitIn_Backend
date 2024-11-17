@@ -91,6 +91,11 @@ const chat = {
 
     bulkChatSave: async () => {
         const keys = await redisClient.keys('chat:*');
+
+        if (keys.length == 0) {
+            return;
+        }
+
         for (const key of keys) {
             const messages = await redisClient.lrange(key, 0, -1);
             const parsedMessages = messages.map(JSON.parse);

@@ -1,7 +1,12 @@
 import jwtService from "../jwtservice/jwt.js";
 
 const authenticateToken = (req, res, next) => {
-    const token = req.headers['authorization'].split(' ')[1];
+    let token = null;
+    if (req.headers['authorization'] != null && req.headers['authorization'] != "") {
+        token = req.headers['authorization'].split(' ')[1];
+    } else {
+        return res.status(401).json({ message: 'No token provided' });
+    }
 
     if (!token) {
         return res.status(401).json({ message: 'Token missing' });

@@ -1,11 +1,15 @@
 import jwtService from "../jwtservice/jwt.js";
 
 const authenticateSocketToken = (socket, next) => {
-    const token = socket.handshake.headers['authorization'].split(' ')[1];
+    let token = null;
+    if (socket.handshake.headers['authorization'] != null || socket.handshake.headers['authorization'] != "") {
+        token = socket.handshake.headers['authorization'].split(' ')[1];
+    } else {
+        return res.status(401).json({ message: 'No token provided' });
+    }
 
     if (!token) {
-        console.error('Authorization token missing');
-        return next(new Error('Authorization token missing'));
+        return res.status(401).json({ message: 'Token missing' });
     }
 
     const { valid, decodedToken, error } = jwtService.validateJwt(token);

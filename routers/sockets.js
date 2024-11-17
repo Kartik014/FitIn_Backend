@@ -1,10 +1,16 @@
 import authenticateSocketToken from "../middlewares/authenticateSocketToken.js";
-import initializeChatSocket from "../sockets/sockets.js";
+import { initializeCallSocket, initializeChatSocket } from "../sockets/sockets.js";
 
-const socketRoute = (io) => {
+const chatSocketRoute = (io) => {
     const socket = io.of('/chat')
     socket.use(authenticateSocketToken)
     initializeChatSocket(socket);
 }
 
-export default socketRoute;
+const callSocketRoute = (io) => {
+    const socket = io.of('/call')
+    socket.use(authenticateSocketToken)
+    initializeCallSocket(socket);
+}
+
+export { chatSocketRoute, callSocketRoute };
