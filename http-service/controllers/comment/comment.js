@@ -1,4 +1,3 @@
-import Comment from "../../database/models/comment/commentModel.js";
 import { CommentDTO, ReplyDTO } from "../../DTO/commentsDTO.js";
 import commentService from "../../service/comment/commentService.js";
 

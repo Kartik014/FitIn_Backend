@@ -1,13 +1,13 @@
 import express from "express";
 import xssClean from "xss-clean";
-import authenticateToken from "../../middlewares/authenticateToken";
 import { getChathistory } from "../controllers/chat/chatController.js";
+import authenticateSocketToken from "../middlewares/authenticateSocketToken.js";
 
 
 const apiRouter = express.Router();
 
 apiRouter
     .route('/getChatHistory')
-    .get(authenticateToken, xssClean(), getChathistory());
+    .get(authenticateSocketToken, xssClean(), getChathistory());
 
 export default apiRouter;
