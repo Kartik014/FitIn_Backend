@@ -1,57 +1,59 @@
-import bucket from "../../firebase.js"; // Firebase configuration
 import path from "path";
 import { pool } from "../../database/db.js";
+import bucket from "../../firebase.js";
 
 // Function to create a post
 const createPost = async ({
-  userId,
+  userid,
   caption,
-  postingTime,
+  postingtime,
   location,
-  mediaFile,
+  mediafile,
 }) => {
-  let mediaFileLink = null;
-  let fileType = null;
+  let mediafilelink = null;
+  let filetype = null;
 
   // Ensure the 'posts' table exists; if not, create it
   await pool.query(`
     CREATE TABLE IF NOT EXISTS posts (
-      postId SERIAL PRIMARY KEY,
-      userId VARCHAR(255) NOT NULL,
+      postid SERIAL PRIMARY KEY,
+      userid VARCHAR(255) NOT NULL,
       caption TEXT NOT NULL,
-      postingTime TIMESTAMP NOT NULL,
+      postingtime TIMESTAMP NOT NULL,
       location VARCHAR(255), -- Optional
-      mediaLink TEXT, -- Optional
-      fileType VARCHAR(50) -- Optional
+      medialink TEXT, -- Optional
+      filetype VARCHAR(50) -- Optional
     );
   `);
 
   // If there's a media file, upload it to Firebase
-  if (mediaFile) {
-    const fileName = `${Date.now()}_${mediaFile.originalname}`;
+  if (mediafile) {
+    const fileName = `${Date.now()}_${mediafile.originalname}`;
     const blob = bucket.file(fileName);
     const blobStream = blob.createWriteStream({
       metadata: {
-        contentType: mediaFile.mimetype,
+        contentType: mediafile.mimetype,
       },
     });
 
     await new Promise((resolve, reject) => {
       blobStream.on("finish", () => {
-        mediaFileLink = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-        fileType = path.extname(fileName);
+        mediafilelink = `https://firebasestorage.googleapis.com/v0/b/${
+          bucket.name
+        }/o/${encodeURIComponent(fileName)}?alt=media`;
+        filetype = path.extname(fileName);
         resolve();
       });
       blobStream.on("error", reject);
-      blobStream.end(mediaFile.buffer);
+      blobStream.end(mediafile.buffer);
     });
   }
 
   // Insert post data into PostgreSQL
   const result = await pool.query(
-    `INSERT INTO posts (userId, caption, postingTime, location, mediaLink, fileType) 
+    `INSERT INTO posts (userid, caption, postingtime, location, medialink, filetype) 
      VALUES ($1, $2, $3, $4, $5, $6) RETURNING postId`,
-    [userId, caption, postingTime, location || null, mediaFileLink, fileType]
+    [userid, caption, postingtime, location || null, mediafilelink, filetype]
   );
 
   return result.rows[0]; // Returning the created post ID

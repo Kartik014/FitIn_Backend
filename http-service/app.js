@@ -8,6 +8,7 @@ import otpRouter from "./routers/otp.js";
 import postRouter from "./routers/post.js";
 import followersRouter from "./routers/followers.js";
 import commentRouter from "./routers/comment.js";
+import accountRouter from "./routers/account.js";
 
 const app = express();
 
@@ -58,5 +59,6 @@ app.use("/api", userRouter, otpRouter);
 app.use("/post", postRouter);
 app.use("/follow", followersRouter);
 app.use("/comment", commentRouter);
+app.use("/account", accountRouter);
 
 export default app;

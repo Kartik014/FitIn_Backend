@@ -7,6 +7,6 @@ import xssClean from "xss-clean";
 const router = Router();
 
 // Route to create a post
-router.post("/create", authenticateToken, xssClean(), upload.single("mediaFile"), createPostHandler);
+router.post("/create", upload.single("mediafile"), createPostHandler);
 
 export default router;

@@ -2,15 +2,15 @@ import { createPost } from "../../service/postService/postService.js";
 // Controller function to handle post creation
 export const createPostHandler = async (req, res) => {
   try {
-    const { userId, caption, postingTime, location } = req.body;
-    const mediaFile = req.file;
+    const { userid, caption, postingtime, location } = req.body;
+    const mediafile = req.file;
 
     const post = await createPost({
-      userId,
+      userid,
       caption,
-      postingTime,
+      postingtime,
       location,
-      mediaFile,
+      mediafile,
     });
 
     res
@@ -19,8 +19,8 @@ export const createPostHandler = async (req, res) => {
   } catch (error) {
     console.error("Error creating post:", error);
     res.status(500).json({
-      message: 'Internal Server Error',
-      error: err.message
+      message: "Internal Server Error",
+      error: err.message,
     });
   }
 };

@@ -6,6 +6,7 @@ import user from "./database/models/user/user.js";
 import calls from "./database/models/calls/calls.js";
 import dotenv from "dotenv";
 import consumer from "./kafka/kafkaConsumer.js";
+import account from "./database/models/account/account.js";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const initializeDatabase = async () => {
     await otp.createOtpTable();
     await followers.createFollowersTable();
     await calls.createCallsTable();
+    await account.createAccountTable();
     console.log("Database initialized");
     await consumer.newUserConsumer();
   } catch (error) {
