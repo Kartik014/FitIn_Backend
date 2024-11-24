@@ -16,7 +16,7 @@ const initializeDatabase = async () => {
 
 const startChatServer = async () => {
   const chatPort = process.env.CHAT_PORT || 3001;
-  const chatServer = chatApp.listen(chatPort, () => {
+  const chatServer = chatApp.listen(chatPort, '0.0.0.0', () => {
     console.log(`CHAT Server is running on port ${chatPort}`);
   });
   initializeChatServer(chatServer);
@@ -26,7 +26,7 @@ const startAllServers = async () => {
   await initializeDatabase();
 
   startBulkChatSaveCron();
-  
+
   startChatServer();
 };
 

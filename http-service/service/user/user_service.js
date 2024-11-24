@@ -6,10 +6,10 @@ import jwtService from "../../jwtservice/jwt.js";
 const userService = {
     addUser: async (userDTO) => {
         try {
-            
+
             const userExist = await user.getUserbyEmailOrUsername(userDTO);
             if (userExist) {
-                throw new Error('Username or email already exists');
+                return { newUser: userDTO, user_exist: true };
             }
 
             const hashedPassword = await bcrypt.hash(userDTO.password, 10);
@@ -25,7 +25,7 @@ const userService = {
             )
 
             const createUser = await user.addUser(newUser);
-            return createUser;
+            return { newUser: createUser, user_exist: false };
 
         } catch (err) {
 
@@ -39,18 +39,20 @@ const userService = {
         try {
 
             const userExist = await user.getUserbyEmailOrUsername(userDTO);
-            if(!userExist) {
-                throw new Error('User not found');
+            if (!userExist) {
+                // throw new Error('User not found');
+                return { existingUser: userExist, credentials: false };
             } else {
-                const comparePassword = bcrypt.compare(userDTO.password, userExist.password)
-
-                if(comparePassword) {
+                const comparePassword = await bcrypt.compare(userDTO.password, userExist.password);
+                
+                if (comparePassword) {
                     const session = jwtService.generateToken(userExist);
                     userExist.session = session;
                     const updatedSession = await user.updateUserLogIn(userExist);
-                    return updatedSession;
+                    return { existingUser: updatedSession, credentials: true };
                 } else {
-                    throw new Error('Invalid credentials');
+                    // throw new Error('Invalid credentials');
+                    return { existingUser: userExist, credentials: false };
                 }
 
             }
@@ -82,7 +84,7 @@ const userService = {
 
             const logout = await user.logoutUser(userDTO);
             return logout;
-            
+
         } catch (err) {
 
             console.error('Error in logoutUser service: ', err);
@@ -96,7 +98,7 @@ const userService = {
 
             const deleteUser = await user.deleteUser(userDTO);
             return deleteUser;
-            
+
         } catch (err) {
 
             console.error('Error in deleteUser service: ', err);

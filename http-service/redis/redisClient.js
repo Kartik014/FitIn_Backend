@@ -5,7 +5,7 @@ dotenv.config();
 
 const redis = new Redis({
   host: process.env.REDISHOST || "10.22.15.92",
-  port: process.env.REDISPORT || "6379",
+  port: Number(process.env.REDISPORT) || "6379",
   password: process.env.REDISPASS || "",
 });
 

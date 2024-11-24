@@ -20,7 +20,7 @@ export const createPostHandler = async (req, res) => {
     console.error("Error creating post:", error);
     res.status(500).json({
       message: "Internal Server Error",
-      error: err.message,
+      error: error.message,
     });
   }
 };

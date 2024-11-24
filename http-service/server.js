@@ -27,7 +27,7 @@ const initializeDatabase = async () => {
 
 const startHttpServer = async () => {
   const httpPort = process.env.HTTP_PORT || 3000;
-  const server = httpApp.listen(httpPort, () => {
+  const server = httpApp.listen(httpPort, '0.0.0.0', () => {
     console.log(`HTTP Server is running on port ${httpPort}`);
   });
 };

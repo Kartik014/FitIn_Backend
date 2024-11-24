@@ -22,26 +22,37 @@ const createUser = async (req, res) => {
             req.body.email,
         )
 
-        const newUser = await userService.addUser(userDTO);
+        const { newUser, user_exist } = await userService.addUser(userDTO);
 
-        const otpDTO = new OtpDTO(
-            null,
-            null,
-            newUser.id,
-            "new_account",
-            false
-        )
+        if (!user_exist) {
+            const otpDTO = new OtpDTO(
+                null,
+                null,
+                newUser.id,
+                "new_account",
+                false
+            )
 
-        const otp = await otpService.addOtp(otpDTO);
+            const otp = await otpService.addOtp(otpDTO);
 
-        await createTopic("new-user", 1);
-        producer.newUserProducer(newUser, otp);
+            await createTopic("new-user", 1);
+            producer.newUserProducer(newUser, otp);
 
-        res.status(200).json({
-            message: 'User created successfully',
-            user: newUser,
-            otp: otp
-        });
+            res.status(200).json({
+                message: 'User created successfully',
+                user: newUser,
+                otp: otp
+            });
+            
+        } else {
+
+            res.status(401).json({
+                message: 'Username or email already exists',
+                user: newUser,
+                otp: otp
+            });
+
+        }
 
     } catch (error) {
 
@@ -68,7 +79,7 @@ const getUser = async (req, res) => {
             null
         )
 
-        const existingUser = await userService.getUser(userDTO);
+        const { existingUser, credentials } = await userService.getUser(userDTO);
 
         const otpDTO = new OtpDTO(
             null,
@@ -81,14 +92,21 @@ const getUser = async (req, res) => {
 
         if (isOtpVerified) {
 
-            res.status(200).json({
-                message: 'LogIn successfull',
-                user: existingUser
-            });
+            if (credentials) {
+                res.status(200).json({
+                    message: 'LogIn successfull',
+                    user: existingUser
+                });
+            } else {
+                res.status(401).json({
+                    message: 'Invalid Credentials',
+                    user: existingUser
+                });
+            }
 
         } else {
 
-            res.status(200).json({
+            res.status(401).json({
                 message: 'OTP not verified',
                 user: existingUser
             });

@@ -9,12 +9,15 @@ import postRouter from "./routers/post.js";
 import followersRouter from "./routers/followers.js";
 import commentRouter from "./routers/comment.js";
 import accountRouter from "./routers/account.js";
+import plansRouter from "./routers/plans.js";
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
+
+app.set('trust proxy', true);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -55,10 +58,12 @@ app.use(
   })
 );
 
-app.use("/api", userRouter, otpRouter);
+app.use("/user", userRouter);
+app.use("/otp", otpRouter);
 app.use("/post", postRouter);
 app.use("/follow", followersRouter);
 app.use("/comment", commentRouter);
 app.use("/account", accountRouter);
+app.use("/plans", plansRouter);
 
 export default app;

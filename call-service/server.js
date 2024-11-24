@@ -18,7 +18,7 @@ const initializeDatabase = async () => {
 
 const startCallServer = async () => {
   const callPort = process.env.CALL_PORT || 3002;
-  const callServer = callApp.listen(callPort, () => {
+  const callServer = callApp.listen(callPort, '0.0.0.0', () => {
     console.log(`CALL Server is running on port ${callPort}`);
   });
   initializeCallServer(callServer);
