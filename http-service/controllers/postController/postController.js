@@ -36,6 +36,7 @@ export const createPostHandler = async (req, res) => {
     }
 
     const postDTO = new PostDTO(
+      null,
       userid,
       caption,
       postingtime || new Date(),

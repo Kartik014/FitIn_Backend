@@ -1,4 +1,4 @@
-import posts from "../../database/models/posts/posts";
+import posts from "../../database/models/posts/posts.js";
 
 const postService = {
   // Add a new post

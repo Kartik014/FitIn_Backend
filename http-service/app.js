@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 
-app.set('trust proxy', true);
+// app.set('trust proxy', true);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,

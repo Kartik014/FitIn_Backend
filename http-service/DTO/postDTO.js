@@ -1,6 +1,6 @@
 class PostDTO {
   constructor(
-    postid,
+    postid = null,
     userid,
     caption,
     postingtime = new Date(),

@@ -10,9 +10,9 @@ const posts = {
                 caption TEXT NOT NULL,
                 postingtime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 location VARCHAR(255), -- Optional
-                medialink TEXT, -- Optional
+                medialink TEXT,
                 filetype VARCHAR(50) -- Optional
-            );
+            ); 
         `;
 
     try {
@@ -88,12 +88,12 @@ const posts = {
       FROM posts p
       INNER JOIN account a ON p.userid = a.userid
       WHERE p.userid = ANY (
-        SELECT followedbyid 
+        SELECT followerid
         FROM followers 
-        WHERE followerid = $1 AND requeststatus = 1
+        WHERE followedbyid = $1 AND requeststatus=1
       )
       ORDER BY p.postingtime DESC
-      LIMIT $2 OFFSET $3;
+      LIMIT $2 OFFSET $3; 
   `;
 
     const values = [currentUserId, limit, offset];
