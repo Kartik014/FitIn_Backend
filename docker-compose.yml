@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  http-service:
+    build:
+      context: ./http-service
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_USER=postgres
+      - DATABASE_HOST=172.17.0.1
+      - DATABASE_NAME=FitIn_Database
+      - DATABASE_PASSWORD=PUFAVRHTFP
+      - DATABASE_PORT=5432
+      - SECRET_TOKEN=pufavhrtfp01@qwerty12345
+      - EMAIL=agarwalkartik419@gmail.com
+      - PASSWORD=gdjl huvb yjgt smzq
+      - MONGODB=mongodb+srv://kartikagarwal014:PUFAVRHTFP@cluster0.wmd1u.mongodb.net/Fitin?authSource=admin&retryWrites=true&w=majority
+      - REDISHOST=redis
+      - REDISPORT=6379
+      - KAFKA_BROKER=kafka:9092
+    networks:
+      - fitin-network
+    depends_on:
+      - kafka
+      - redis
+
+  chat-service:
+    build:
+      context: ./chat-service
+    ports:
+      - "3002:3002"
+    environment:
+      - DATABASE_USER=postgres
+      - DATABASE_HOST=172.17.0.1
+      - DATABASE_NAME=FitIn_Database
+      - DATABASE_PASSWORD=PUFAVRHTFP
+      - DATABASE_PORT=5432
+      - SECRET_TOKEN=pufavhrtfp01@qwerty12345
+      - EMAIL=agarwalkartik419@gmail.com
+      - PASSWORD=gdjl huvb yjgt smzq
+      - MONGODB=mongodb+srv://kartikagarwal014:PUFAVRHTFP@cluster0.wmd1u.mongodb.net/Fitin?authSource=admin&retryWrites=true&w=majority
+      - REDISHOST=redis
+      - REDISPORT=6379
+      - KAFKA_BROKER=kafka:9092
+    networks:
+      - fitin-network
+    depends_on:
+      - kafka
+      - redis
+
+  call-service:
+    build:
+      context: ./call-service
+    ports:
+      - "3003:3003"
+    environment:
+      - DATABASE_USER=postgres
+      - DATABASE_HOST=172.17.0.1
+      - DATABASE_NAME=FitIn_Database
+      - DATABASE_PASSWORD=PUFAVRHTFP
+      - DATABASE_PORT=5432
+      - SECRET_TOKEN=pufavhrtfp01@qwerty12345
+      - EMAIL=agarwalkartik419@gmail.com
+      - PASSWORD=gdjl huvb yjgt smzq
+      - MONGODB=mongodb+srv://kartikagarwal014:PUFAVRHTFP@cluster0.wmd1u.mongodb.net/Fitin?authSource=admin&retryWrites=true&w=majority
+      - REDISHOST=redis
+      - REDISPORT=6379
+      - KAFKA_BROKER=kafka:9092
+    networks:
+      - fitin-network
+    depends_on:
+      - kafka
+      - redis
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - http-service
+      - chat-service
+      - call-service
+    networks:
+      - fitin-network
+
+  kafka:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    networks:
+      - fitin-network
+
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - "2181:2181"
+    networks:
+      - fitin-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6380:6379"
+    networks:
+      - fitin-network
+
+networks:
+  fitin-network:
+    driver: bridge
